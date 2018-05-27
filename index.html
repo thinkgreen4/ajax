@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Favorite Model</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Model Search</h1>
+    
+        <!-- Rendered buttons will get dumped Here  -->
+        <div id="buttons-view"></div>
+    
+        <form id="movie-form">
+          <label for="model-input">Add a Model Broad</label>
+          <input type="text" id="model-input"><br>
+    
+          <!-- Button triggers new movie to be added -->
+          <input id="add-model" type="submit" value="Add a Model Broad">
+        </form>
+    
+        <!-- Movies will get dumped here -->
+        <div id="model-view"></div>
+
+   
+
+    <div id="gifs-appear-here">
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        // Create an array to hold the topics that will later be turned into buttons
+        // When the buttons are clicked they will use ajax to call and get gifs
+        var model = ["Bella Hadid", "Gigi Hadid", "Alessandra Amrbosio", "Kate Upton", "Taylor Hill", "Candice Swanepoel", "Lara Stone"]
+        //queryURL and ajax call here we need to to 
+
+
+        function displayModelGif () {
+            var models = $(this).attr("data-model");
+            var API = "&api_key=KvHyG5Nn4E9z93IOQM8P2DluGkZzgFcZ";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + models + API ;
+        
+            
+        
+        $.ajax ({
+            url: queryURL,
+            method: "GET",
+        }).then (function(response) {
+            
+          
+
+        });
+        // Create button for each model in array and models added
+        }
+        function renderButtons () {
+            $("#buttons-view").empty();
+            for (var i=0; i < model.length; i++) {
+                var b = $("<button>");
+            // Adds a class of movie to our button
+          b.addClass("model");
+          // Added a data-attribute
+        b.attr("data-model", model[i]);
+          // Provided the initial button text
+        b.text(model[i]);
+          // Added the button to the buttons-view div
+        $("#buttons-view").append(b);
+            }
+        }
+        // This function handles events where the add movie button is clicked
+        $("#add-model").on("click", function(event) {
+        event.preventDefault();
+        // This line of code will grab the input from the textbox
+        var addModel = $("#model-input").val().trim();
+
+        // The movie from the textbox is then added to our array
+        model.push(addModel);
+
+        // Calling renderButtons which handles the processing of our movie array
+        renderButtons();
+
+      });
+
+      
+      $(document).on("click", ".model", displayModelGif);
+
+      // Calling the renderButtons function to display the intial buttons
+      renderButtons();
+
+      $("#buttons-view").on("click", ".model" ,function () {
+      var models = $(this).attr("data-model");
+      var API = "&api_key=KvHyG5Nn4E9z93IOQM8P2DluGkZzgFcZ&limit=10";
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + models + API ;
+
+      $.ajax({
+          url: queryURL,
+          method: "GET",
+
+      }).then(function(response) {
+          console.log(response)
+          var results = response.data;
+          console.log("models" + results);
+          for ( var i = 0; i < results.length; i++ )  {
+              var modelDiv = $("<div>");
+                var rating = results[i].rating;
+
+                var p = $("<p>").text("Rating: " + rating);
+            
+              var modelImage = $("<img>");
+              modelImage.attr("src", results[i].images.fixed_height.url);
+               console.log("results" + modelImage);
+                $(modelDiv).prepend(p);
+                $(modelDiv).prepend(modelImage);
+               $("#gifs-appear-here").prepend(modelDiv);
+
+          }
+         
+
+})
+
+});
+    
+    
+    </script>
+      </div>
+    </body>
+    
+    </html>
